@@ -27,3 +27,7 @@ export interface CurrentUser {
   name: string;
   role: "USER" | "ADMIN";
 }
+
+export interface UpdateProfileRequest {
+  name: string;
+}

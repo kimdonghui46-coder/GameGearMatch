@@ -9,6 +9,7 @@ import com.gamegearmatch.backend.user.dto.SignupRequest;
 import com.gamegearmatch.backend.user.dto.SignupResponse;
 import com.gamegearmatch.backend.user.repository.UserRepository;
 import com.gamegearmatch.backend.user.dto.CurrentUserResponse;
+import com.gamegearmatch.backend.user.dto.UpdateProfileRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -80,6 +81,17 @@ public class UserService {
                         "사용자를 찾을 수 없습니다."
                 ));
 
+        return CurrentUserResponse.from(user);
+    }
+
+    @Transactional
+    public CurrentUserResponse updateCurrentUser(String email, UpdateProfileRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "사용자를 찾을 수 없습니다."
+                ));
+
+        user.updateName(request.name().trim());
         return CurrentUserResponse.from(user);
     }
 }
