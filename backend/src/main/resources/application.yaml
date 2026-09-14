@@ -3,8 +3,8 @@ spring:
     name: backend
 
   datasource:
-    url: jdbc:mysql://localhost:3306/gamegearmatch?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: gamegear
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:gamegearmatch}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${DB_USERNAME:gamegear}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
