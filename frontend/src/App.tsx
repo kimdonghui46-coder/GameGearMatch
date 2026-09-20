@@ -7,6 +7,8 @@ import CartPage from "./pages/CartPage";
 import AdminProductsPage from "./pages/AdminProductsPage";
 import SecurityStatus from "./components/SecurityStatus";
 import ProfilePage from "./pages/ProfilePage";
+import OrdersPage from "./pages/OrdersPage";
+import RecommendationPage from "./pages/RecommendationPage";
 import "./App.css";
 
 function App() {
@@ -20,6 +22,8 @@ function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/recommendations" element={<RecommendationPage />} />
           <Route path="/admin/products" element={<><SecurityStatus /><AdminProductsPage /></>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

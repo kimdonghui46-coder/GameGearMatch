@@ -90,6 +90,16 @@ public class Product {
         this.description = description;
     }
 
+    public void decreaseStock(int quantity) {
+        if (quantity < 1) {
+            throw new IllegalArgumentException("차감 수량은 1개 이상이어야 합니다.");
+        }
+        if (stock < quantity) {
+            throw new IllegalArgumentException(name + " 상품의 재고가 부족합니다.");
+        }
+        this.stock -= quantity;
+    }
+
     @PrePersist
     public void prePersist() {
         LocalDateTime now = LocalDateTime.now();
