@@ -29,6 +29,10 @@ aws:
   s3:
     bucket: ${S3_BUCKET:}
 
+toss:
+  secret-key: ${TOSS_SECRET_KEY:}
+  confirm-url: https://api.tosspayments.com/v1/payments/confirm
+
 jwt:
   secret: ${JWT_SECRET}
   access-token-expiration: 3600000

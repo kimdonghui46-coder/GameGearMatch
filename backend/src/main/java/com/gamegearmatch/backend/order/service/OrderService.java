@@ -45,7 +45,6 @@ public class OrderService {
                     .orderPrice(cartItem.getProduct().getPrice())
                     .build());
         }
-        order.markPaid();
         Order savedOrder = orderRepository.save(order);
         cartItemRepository.deleteAllByCartId(cart.getId());
         return OrderResponse.from(savedOrder);
@@ -54,5 +53,14 @@ public class OrderService {
     public List<OrderResponse> getOrders(String email) {
         return orderRepository.findAllByUserEmailOrderByCreatedAtDesc(email)
                 .stream().map(OrderResponse::from).toList();
+    }
+
+    @Transactional
+    public OrderResponse cancelPendingOrder(String email, String paymentOrderId) {
+        Order order = orderRepository.findByPaymentOrderIdAndUserEmail(paymentOrderId, email)
+                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+        order.getOrderItems().forEach(item -> item.getProduct().increaseStock(item.getQuantity()));
+        order.cancel();
+        return OrderResponse.from(order);
     }
 }

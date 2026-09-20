@@ -11,6 +11,9 @@ import OrdersPage from "./pages/OrdersPage";
 import RecommendationPage from "./pages/RecommendationPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import AdminImageUploadPage from "./pages/AdminImageUploadPage";
+import PaymentPage from "./pages/PaymentPage";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage";
+import PaymentFailPage from "./pages/PaymentFailPage";
 import "./App.css";
 
 function App() {
@@ -29,6 +32,9 @@ function App() {
           <Route path="/products/:productId" element={<ProductDetailPage />} />
           <Route path="/admin/products" element={<><SecurityStatus /><AdminProductsPage /></>} />
           <Route path="/admin/images" element={<AdminImageUploadPage />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/payment/success" element={<PaymentSuccessPage />} />
+          <Route path="/payment/fail" element={<PaymentFailPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

@@ -11,6 +11,8 @@ export interface OrderItem {
 
 export interface Order {
   id: number;
+  paymentOrderId: string;
+  orderName: string;
   totalPrice: number;
   status: "PENDING" | "PAID" | "CANCELLED";
   createdAt: string;

@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "orders")
@@ -48,6 +49,9 @@ public class Order {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(unique = true, length = 50)
+    private String paymentOrderId;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
@@ -56,6 +60,7 @@ public class Order {
         this.user = user;
         this.totalPrice = 0;
         this.status = OrderStatus.PENDING;
+        this.paymentOrderId = "GGM-" + UUID.randomUUID();
     }
 
     public void addItem(OrderItem orderItem) {
@@ -69,7 +74,16 @@ public class Order {
     }
 
     public void cancel() {
+        if (this.status != OrderStatus.PENDING) {
+            throw new IllegalStateException("결제 대기 주문만 취소할 수 있습니다.");
+        }
         this.status = OrderStatus.CANCELLED;
+    }
+
+    public String getOrderName() {
+        if (orderItems.isEmpty()) return "GameGearMatch 상품";
+        String firstName = orderItems.getFirst().getProduct().getName();
+        return orderItems.size() == 1 ? firstName : firstName + " 외 " + (orderItems.size() - 1) + "건";
     }
 
     private void recalculateTotalPrice() {
