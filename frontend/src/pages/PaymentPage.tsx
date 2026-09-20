@@ -13,21 +13,28 @@ function PaymentPage() {
   useEffect(() => {
     if (!order || initialized.current) return;
     initialized.current = true;
-    const clientKey = import.meta.env.VITE_TOSS_CLIENT_KEY;
-    if (!clientKey || !window.TossPayments) { setError("토스 클라이언트 키가 설정되지 않았습니다."); return; }
-    let customerKey = localStorage.getItem("tossCustomerKey");
-    if (!customerKey) { customerKey = `${crypto.randomUUID()}-ggm`; localStorage.setItem("tossCustomerKey", customerKey); }
-    const widgets = window.TossPayments(clientKey).widgets({ customerKey });
-    widgetsRef.current = widgets;
     void (async () => {
       try {
+        const clientKey = import.meta.env.VITE_TOSS_CLIENT_KEY;
+        if (!clientKey || !window.TossPayments) throw new Error("토스 클라이언트 키가 설정되지 않았습니다.");
+        let customerKey = localStorage.getItem("tossCustomerKey");
+        if (!customerKey) {
+          const randomId = globalThis.crypto?.randomUUID?.()
+            ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+          customerKey = `${randomId}-ggm`;
+          localStorage.setItem("tossCustomerKey", customerKey);
+        }
+        const widgets = window.TossPayments(clientKey).widgets({ customerKey });
+        widgetsRef.current = widgets;
         await widgets.setAmount({ currency: "KRW", value: order.totalPrice });
         await Promise.all([
           widgets.renderPaymentMethods({ selector: "#payment-method", variantKey: "DEFAULT" }),
           widgets.renderAgreement({ selector: "#agreement", variantKey: "AGREEMENT" }),
         ]);
         setReady(true);
-      } catch { setError("결제창을 불러오지 못했습니다."); }
+      } catch (cause) {
+        setError(cause instanceof Error ? cause.message : "결제창을 불러오지 못했습니다.");
+      }
     })();
   }, [order]);
 
