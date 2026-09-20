@@ -23,10 +23,6 @@ public class DemoProductDataInitializer implements ApplicationRunner {
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
-        if (productRepository.count() >= 10) {
-            return;
-        }
-
         List<DemoProduct> samples = List.of(
                 new DemoProduct("AERO X1 무선 게이밍 마우스", ProductCategory.MOUSE, "GGM", 89900, 30, ConnectionType.WIRELESS, "/demo-gaming-mouse.png", "초경량 설계와 정밀 센서를 적용한 FPS용 무선 마우스", 58, 26000, 1000, 6, null, null, null, 1, 70, null),
                 new DemoProduct("STRIKE M2 RGB 마우스", ProductCategory.MOUSE, "NEXONIC", 45900, 42, ConnectionType.WIRED, null, "정확한 클릭감과 7단계 RGB 조명을 제공하는 입문용 마우스", 76, 16000, 1000, 7, null, null, null, 1, null, null),
@@ -57,6 +53,46 @@ public class DemoProductDataInitializer implements ApplicationRunner {
                     .noiseLevel(sample.noiseLevel()).responseTime(sample.responseTime()).batteryHours(sample.batteryHours())
                     .microphone(sample.microphone()).build());
         }
+
+        List<DemoProduct> realProducts = List.of(
+                new DemoProduct("Aerox 5 Wireless", ProductCategory.MOUSE, "SteelSeries", 169000, 16, ConnectionType.BOTH,
+                        "https://media.steelseriescdn.com/thumbs/catalog/items/62406/d447dc561ffd4b45a8162f663464f34b.png.500x400_q100_crop-fit_optimize.png",
+                        "9버튼 구성과 180시간 배터리를 갖춘 MOBA·MMORPG용 초경량 무선 게이밍 마우스", 74, 18000, 1000, 9, null, null, null, 1, 180, null),
+                new DemoProduct("Aerox 3 Wireless (2022)", ProductCategory.MOUSE, "SteelSeries", 119000, 21, ConnectionType.BOTH,
+                        "https://media.steelseriescdn.com/thumbs/catalog/items/62612/f707609b4f0942168066704ab69c820a.png.500x400_q100_crop-fit_optimize.png",
+                        "가벼운 타공형 설계와 듀얼 무선 연결을 지원하는 게이밍 마우스", 68, 18000, 1000, 6, null, null, null, 1, 200, null),
+                new DemoProduct("Apex Pro TKL Gen 3", ProductCategory.KEYBOARD, "SteelSeries", 299000, 12, ConnectionType.WIRED,
+                        "https://media.steelseriescdn.com/thumbs/catalog/items/64663/0b38ae20302d4cb39d7f93999bca64f8.png.500x400_q100_crop-fit_optimize.png",
+                        "OmniPoint 3.0 조절식 마그네틱 스위치와 래피드 트리거를 지원하는 텐키리스 키보드", 1030, null, 1000, null, "OmniPoint 3.0 마그네틱", "텐키리스", 30, 1, null, null),
+                new DemoProduct("Apex 3 TKL", ProductCategory.KEYBOARD, "SteelSeries", 69000, 28, ConnectionType.WIRED,
+                        "https://media.steelseriescdn.com/thumbs/catalog/items/64831/a3b21c0da8ea42c895b7b9374470eed6.png.500x400_q100_crop-fit_optimize.png",
+                        "저소음 게이밍 스위치와 IP32 생활 방수를 지원하는 텐키리스 키보드", 639, null, 1000, null, "Whisper Quiet", "텐키리스", 22, 1, null, null),
+                new DemoProduct("Arctis Nova 7 Wireless", ProductCategory.HEADSET, "SteelSeries", 239000, 14, ConnectionType.BOTH,
+                        "https://media.steelseriescdn.com/thumbs/catalog/items/61553/66996dc9997f43029df61a70f1a79b40.png.500x400_q100_crop-fit_optimize.png",
+                        "2.4GHz와 Bluetooth 동시 연결을 지원하는 멀티플랫폼 무선 게이밍 헤드셋", 325, null, null, null, null, null, null, 22, 38, true),
+                new DemoProduct("Arctis Nova 5 Wireless", ProductCategory.HEADSET, "SteelSeries", 179000, 19, ConnectionType.BOTH,
+                        "https://media.steelseriescdn.com/thumbs/catalog/items/61670/f359857a516d4d1ab4b50ec1bcdbc6c4.png.500x400_q100_crop-fit_optimize.png",
+                        "모바일 앱 프리셋과 2.4GHz·Bluetooth 연결을 지원하는 무선 게이밍 헤드셋", 265, null, null, null, null, null, null, 22, 60, true)
+        );
+
+        for (DemoProduct product : realProducts) {
+            saveIfMissing(product);
+        }
+    }
+
+    private void saveIfMissing(DemoProduct sample) {
+        if (productRepository.existsByName(sample.name())) {
+            return;
+        }
+        Product product = productRepository.save(Product.builder()
+                .name(sample.name()).category(sample.category()).brand(sample.brand())
+                .price(sample.price()).stock(sample.stock()).connectionType(sample.connectionType())
+                .imageUrl(sample.imageUrl()).description(sample.description()).build());
+        productSpecRepository.save(ProductSpec.builder()
+                .product(product).weight(sample.weight()).dpi(sample.dpi()).pollingRate(sample.pollingRate())
+                .buttonCount(sample.buttonCount()).switchType(sample.switchType()).keyboardLayout(sample.keyboardLayout())
+                .noiseLevel(sample.noiseLevel()).responseTime(sample.responseTime()).batteryHours(sample.batteryHours())
+                .microphone(sample.microphone()).build());
     }
 
     private record DemoProduct(String name, ProductCategory category, String brand, Integer price, Integer stock,
