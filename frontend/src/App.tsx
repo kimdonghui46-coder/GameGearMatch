@@ -19,6 +19,7 @@ import AdminReviewsPage from "./pages/AdminReviewsPage";
 import "./App.css";
 import "./order.css";
 import "./admin-reviews.css";
+import "./address.css";
 
 function App() {
   return (
