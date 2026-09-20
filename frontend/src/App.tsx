@@ -9,6 +9,7 @@ import SecurityStatus from "./components/SecurityStatus";
 import ProfilePage from "./pages/ProfilePage";
 import OrdersPage from "./pages/OrdersPage";
 import RecommendationPage from "./pages/RecommendationPage";
+import ProductDetailPage from "./pages/ProductDetailPage";
 import "./App.css";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/recommendations" element={<RecommendationPage />} />
+          <Route path="/products/:productId" element={<ProductDetailPage />} />
           <Route path="/admin/products" element={<><SecurityStatus /><AdminProductsPage /></>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
