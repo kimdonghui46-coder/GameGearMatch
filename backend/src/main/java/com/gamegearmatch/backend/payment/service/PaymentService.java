@@ -27,7 +27,7 @@ import java.util.Map;
 public class PaymentService {
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
-    private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Value("${toss.secret-key}") private String secretKey;
     @Value("${toss.confirm-url}") private String confirmUrl;
 
