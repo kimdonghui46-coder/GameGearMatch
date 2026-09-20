@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Component
 @RequiredArgsConstructor
 public class DemoProductDataInitializer implements ApplicationRunner {
     private final ProductRepository productRepository;

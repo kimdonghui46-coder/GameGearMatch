@@ -26,6 +26,7 @@ public class RecommendationService {
 
     public List<RecommendationResponse> recommend(RecommendationRequest request) {
         List<Candidate> candidates = productRepository.findByCategory(request.category()).stream()
+                .filter(Product::isVisible)
                 .filter(product -> product.getStock() > 0)
                 .filter(product -> request.maxPrice() == null || product.getPrice() <= request.maxPrice())
                 .filter(product -> matchesConnection(product.getConnectionType(), request.preferredConnection()))

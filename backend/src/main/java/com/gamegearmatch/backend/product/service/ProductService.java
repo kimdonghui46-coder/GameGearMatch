@@ -78,6 +78,7 @@ public class ProductService {
         }
 
         return products.stream()
+                .filter(Product::isVisible)
                 .map(product -> {
                     ProductSpec spec =
                             getProductSpec(product.getId());

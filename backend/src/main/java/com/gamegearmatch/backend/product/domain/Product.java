@@ -44,6 +44,8 @@ public class Product {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    private Boolean visible;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -68,6 +70,7 @@ public class Product {
         this.connectionType = connectionType;
         this.imageUrl = imageUrl;
         this.description = description;
+        this.visible = true;
     }
 
     public void update(
@@ -103,6 +106,14 @@ public class Product {
     public void increaseStock(int quantity) {
         if (quantity < 1) throw new IllegalArgumentException("복구 수량은 1개 이상이어야 합니다.");
         this.stock += quantity;
+    }
+
+    public boolean isVisible() {
+        return !Boolean.FALSE.equals(visible);
+    }
+
+    public void hide() {
+        this.visible = false;
     }
 
     @PrePersist
