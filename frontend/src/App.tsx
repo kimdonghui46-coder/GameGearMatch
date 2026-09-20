@@ -10,6 +10,7 @@ import ProfilePage from "./pages/ProfilePage";
 import OrdersPage from "./pages/OrdersPage";
 import RecommendationPage from "./pages/RecommendationPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
+import AdminImageUploadPage from "./pages/AdminImageUploadPage";
 import "./App.css";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <Route path="/recommendations" element={<RecommendationPage />} />
           <Route path="/products/:productId" element={<ProductDetailPage />} />
           <Route path="/admin/products" element={<><SecurityStatus /><AdminProductsPage /></>} />
+          <Route path="/admin/images" element={<AdminImageUploadPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
