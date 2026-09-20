@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findAllByUserEmailOrderByCreatedAtDesc(String email);
     Optional<Order> findByPaymentOrderIdAndUserEmail(String paymentOrderId, String email);
+    List<Order> findAllByOrderByCreatedAtDesc();
 }

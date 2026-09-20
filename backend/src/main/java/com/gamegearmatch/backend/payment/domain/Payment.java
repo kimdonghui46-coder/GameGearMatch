@@ -27,4 +27,8 @@ public class Payment {
         this.order = order; this.paymentKey = paymentKey; this.amount = amount;
         this.method = method; this.status = status; this.approvedAt = LocalDateTime.now();
     }
+
+    public void markCancelled() {
+        this.status = "CANCELED";
+    }
 }

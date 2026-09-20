@@ -14,7 +14,11 @@ import AdminImageUploadPage from "./pages/AdminImageUploadPage";
 import PaymentPage from "./pages/PaymentPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import PaymentFailPage from "./pages/PaymentFailPage";
+import AdminOrdersPage from "./pages/AdminOrdersPage";
+import AdminReviewsPage from "./pages/AdminReviewsPage";
 import "./App.css";
+import "./order.css";
+import "./admin-reviews.css";
 
 function App() {
   return (
@@ -32,6 +36,8 @@ function App() {
           <Route path="/products/:productId" element={<ProductDetailPage />} />
           <Route path="/admin/products" element={<><SecurityStatus /><AdminProductsPage /></>} />
           <Route path="/admin/images" element={<AdminImageUploadPage />} />
+          <Route path="/admin/orders" element={<AdminOrdersPage />} />
+          <Route path="/admin/reviews" element={<AdminReviewsPage />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/payment/success" element={<PaymentSuccessPage />} />
           <Route path="/payment/fail" element={<PaymentFailPage />} />

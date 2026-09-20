@@ -1,6 +1,9 @@
 package com.gamegearmatch.backend.order.controller;
 
 import com.gamegearmatch.backend.order.dto.OrderResponse;
+import com.gamegearmatch.backend.order.dto.CreateOrderRequest;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.RequestBody;
 import com.gamegearmatch.backend.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,9 +24,9 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(Authentication authentication) {
+    public ResponseEntity<OrderResponse> createOrder(Authentication authentication, @Valid @RequestBody CreateOrderRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(orderService.createOrder(authentication.getName()));
+                .body(orderService.createOrder(authentication.getName(), request));
     }
 
     @GetMapping

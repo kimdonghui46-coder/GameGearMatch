@@ -8,7 +8,7 @@ import com.gamegearmatch.backend.order.domain.OrderStatus;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     List<OrderItem> findAllByOrderId(Long orderId);
-    boolean existsByOrderUserEmailAndProductIdAndOrderStatus(
-            String email, Long productId, OrderStatus status
+    boolean existsByOrderUserEmailAndProductIdAndOrderStatusIn(
+            String email, Long productId, List<OrderStatus> statuses
     );
 }

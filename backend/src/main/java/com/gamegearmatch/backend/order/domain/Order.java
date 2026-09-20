@@ -52,12 +52,33 @@ public class Order {
     @Column(unique = true, length = 50)
     private String paymentOrderId;
 
+    @Column(length = 50)
+    private String recipientName;
+
+    @Column(length = 30)
+    private String recipientPhone;
+
+    @Column(length = 10)
+    private String postalCode;
+
+    @Column(length = 255)
+    private String address;
+
+    @Column(length = 255)
+    private String deliveryRequest;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @Builder
-    public Order(User user) {
+    public Order(User user, String recipientName, String recipientPhone, String postalCode,
+                 String address, String deliveryRequest) {
         this.user = user;
+        this.recipientName = recipientName;
+        this.recipientPhone = recipientPhone;
+        this.postalCode = postalCode;
+        this.address = address;
+        this.deliveryRequest = deliveryRequest;
         this.totalPrice = 0;
         this.status = OrderStatus.PENDING;
         this.paymentOrderId = "GGM-" + UUID.randomUUID();
@@ -73,11 +94,20 @@ public class Order {
         this.status = OrderStatus.PAID;
     }
 
-    public void cancel() {
-        if (this.status != OrderStatus.PENDING) {
-            throw new IllegalStateException("결제 대기 주문만 취소할 수 있습니다.");
+    public void cancelOrRefund() {
+        if (this.status == OrderStatus.SHIPPING || this.status == OrderStatus.DELIVERED
+                || this.status == OrderStatus.CANCELLED_REFUNDED) {
+            throw new IllegalStateException("배송이 시작되었거나 이미 취소된 주문은 취소할 수 없습니다.");
         }
-        this.status = OrderStatus.CANCELLED;
+        this.status = OrderStatus.CANCELLED_REFUNDED;
+    }
+
+    public void updateStatus(OrderStatus nextStatus) {
+        boolean valid = (status == OrderStatus.PAID && nextStatus == OrderStatus.PREPARING)
+                || (status == OrderStatus.PREPARING && nextStatus == OrderStatus.SHIPPING)
+                || (status == OrderStatus.SHIPPING && nextStatus == OrderStatus.DELIVERED);
+        if (!valid) throw new IllegalStateException("현재 주문 상태에서 해당 상태로 변경할 수 없습니다.");
+        this.status = nextStatus;
     }
 
     public String getOrderName() {

@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public record ReviewResponse(
         Long id,
         Long productId,
+        String productName,
         String userName,
         Integer rating,
         String content,
@@ -14,7 +15,7 @@ public record ReviewResponse(
 ) {
     public static ReviewResponse from(Review review) {
         return new ReviewResponse(
-                review.getId(), review.getProduct().getId(), review.getUser().getName(),
+                review.getId(), review.getProduct().getId(), review.getProduct().getName(), review.getUser().getName(),
                 review.getRating(), review.getContent(), review.getCreatedAt()
         );
     }

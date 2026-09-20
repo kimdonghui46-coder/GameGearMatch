@@ -49,6 +49,36 @@ public class PaymentService {
         return PaymentResponse.from(payment);
     }
 
+    @Transactional
+    public void refund(Order order) {
+        Payment payment = paymentRepository.findByOrderId(order.getId())
+                .orElseThrow(() -> new IllegalStateException("승인된 결제 정보를 찾을 수 없습니다."));
+        callTossCancel(payment.getPaymentKey());
+        payment.markCancelled();
+    }
+
+    private void callTossCancel(String paymentKey) {
+        try {
+            String body = objectMapper.writeValueAsString(Map.of("cancelReason", "고객 주문 취소"));
+            String credentials = Base64.getEncoder().encodeToString((secretKey + ":").getBytes(StandardCharsets.UTF_8));
+            HttpRequest request = HttpRequest.newBuilder(URI.create("https://api.tosspayments.com/v1/payments/" + paymentKey + "/cancel"))
+                    .header("Authorization", "Basic " + credentials)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(body)).build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                JsonNode error = objectMapper.readTree(response.body());
+                throw new IllegalStateException(error.path("message").asText("토스 결제 취소에 실패했습니다."));
+            }
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("결제 취소 요청이 중단되었습니다.", exception);
+        } catch (Exception exception) {
+            if (exception instanceof IllegalStateException state) throw state;
+            throw new IllegalStateException("토스 결제 취소 요청에 실패했습니다.", exception);
+        }
+    }
+
     private JsonNode callToss(ConfirmPaymentRequest request) {
         try {
             String body = objectMapper.writeValueAsString(Map.of(

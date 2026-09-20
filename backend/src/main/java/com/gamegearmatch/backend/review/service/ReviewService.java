@@ -31,8 +31,9 @@ public class ReviewService {
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
-        if (!orderItemRepository.existsByOrderUserEmailAndProductIdAndOrderStatus(
-                email, productId, OrderStatus.PAID)) {
+        if (!orderItemRepository.existsByOrderUserEmailAndProductIdAndOrderStatusIn(
+                email, productId, List.of(OrderStatus.PAID, OrderStatus.PREPARING,
+                        OrderStatus.SHIPPING, OrderStatus.DELIVERED))) {
             throw new IllegalArgumentException("구매한 상품만 리뷰를 작성할 수 있습니다.");
         }
         if (reviewRepository.existsByUserIdAndProductId(user.getId(), productId)) {
@@ -50,5 +51,18 @@ public class ReviewService {
         }
         return reviewRepository.findAllByProductIdOrderByCreatedAtDesc(productId)
                 .stream().map(ReviewResponse::from).toList();
+    }
+
+    public List<ReviewResponse> getAllReviews() {
+        return reviewRepository.findAllByOrderByCreatedAtDesc()
+                .stream().map(ReviewResponse::from).toList();
+    }
+
+    @Transactional
+    public void deleteReview(Long reviewId) {
+        if (!reviewRepository.existsById(reviewId)) {
+            throw new IllegalArgumentException("리뷰를 찾을 수 없습니다.");
+        }
+        reviewRepository.deleteById(reviewId);
     }
 }
